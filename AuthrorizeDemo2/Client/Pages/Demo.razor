@@ -1,0 +1,46 @@
+﻿@page "/demo"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Demo</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <h2>Only seen if logged in</h2>
+    </Authorized>
+    <NotAuthorized>
+        <h2>Only seem if not logged in</h2>
+    </NotAuthorized>
+</AuthorizeView>
+
+@if (authState.User.Identity.IsAuthenticated)
+{
+    <h3>Is authenticated by code!</h3>
+}
+else
+{
+    <h3>Is not authenticated by code!</h3>
+}
+
+<p>
+    @email
+</p>
+
+@code {
+    AuthenticationState authState;
+    string email="???";
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            email = authState.User.Identity.Name;
+
+        }
+
+    }
+}
